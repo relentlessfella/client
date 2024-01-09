@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import '../index.css';
 import { LOAD_BOOKS } from '../GraphQL/Queries';
+import Form from '../components/Form';
 
 function CollectionPage() {
   const id = useParams().id;
@@ -37,10 +38,11 @@ function CollectionPage() {
             collection.books.map((book) => (
               <li className="book_item" style={{ listStyleType: 'none' }} key={book.id}>
                 {`Book ID: ${book.id} `}
-                {`Title: ${book.title}, Description: ${book.description}`}
+                {`Title: ${book.title} Description: ${book.description}`}
               </li>
             ))}
         </ul>
+        <Form collection_id={id} />
       </div>
     </div>
   );

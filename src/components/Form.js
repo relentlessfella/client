@@ -1,50 +1,39 @@
 import React, { useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
+import '../index.css';
 
-const ADD_GAME = gql`
-  mutation AddGame($game: AddGameInput!) {
-    addGame(game: $game) {
+const ADD_BOOK = gql`
+  mutation AddBookToCollection($collectionId: ID!, $book: AddBookInput!) {
+    addBookToCollection(collectionId: $collectionId, book: $book) {
       id
       title
-      platform
-      reviews {
-        rating
-        content
-      }
+      description
+      collection_id
     }
   }
 `;
 
-function Form() {
+function Form({ collection_id }) {
   const [title, setTitle] = useState('');
-  const [platform, setPlatform] = useState('');
-  const [review, setReview] = useState('');
-  const [rating, setRating] = useState('');
+  const [description, setDescription] = useState('');
+  const [AddBook] = useMutation(ADD_BOOK);
 
-  const [addGame] = useMutation(ADD_GAME);
-
-  const handleAddGame = async () => {
+  const handleAddBook = async () => {
     try {
-      const result = await addGame({
+      const result = await AddBook({
         variables: {
-          game: {
+          collectionId: collection_id,
+          book: {
             title,
-            platform: [platform],
-            reviews: [{ rating: parseInt(rating), content: review }],
+            description,
           },
         },
       });
-
-      // Handle the result if needed
-      console.log('Game added:', result.data.addGame);
-
-      // Reset form values
+      console.log('book added:', result.data.AddBook);
       setTitle('');
-      setPlatform('');
-      setReview('');
-      setRating('');
+      setDescription('');
     } catch (error) {
-      console.error('Error adding game:', error.message);
+      console.error('Error adding book:', error.message);
     }
   };
 
@@ -60,29 +49,18 @@ function Form() {
       />
       <input
         type="text"
-        placeholder="Platform"
-        value={platform}
+        placeholder="description"
+        value={description}
         onChange={(e) => {
-          setPlatform(e.target.value);
+          setDescription(e.target.value);
         }}
       />
-      <input
-        type="text"
-        placeholder="Review"
-        value={review}
-        onChange={(e) => {
-          setReview(e.target.value);
-        }}
-      />
-      <input
-        type="text"
-        placeholder="Rating"
-        value={rating}
-        onChange={(e) => {
-          setRating(e.target.value);
-        }}
-      />
-      <button onClick={handleAddGame}>Send</button>
+      <button
+        style={{ padding: '5px 10px' }}
+        className="collection_button_back"
+        onClick={handleAddBook}>
+        Send
+      </button>
     </div>
   );
 }

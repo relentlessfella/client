@@ -1,10 +1,9 @@
 import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-import GetUsers from './components/GetUsers';
-import Form from './components/Form';
 import HomePage from './pages/HomePage';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import CollectionPage from './pages/CollectionPage';
+import Header from './components/Header';
 
 const errorLink = onError(({ graphqlErrors, networkError }) => {
   if (graphqlErrors) {
@@ -29,6 +28,7 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
+      <Header />
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />

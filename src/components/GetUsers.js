@@ -3,6 +3,7 @@ import { useQuery, gql } from '@apollo/client';
 import { LOAD_COLLECTIONS } from '../GraphQL/Queries';
 import '../index.css';
 import { Link, useNavigate } from 'react-router-dom';
+import CollectionForm from './CollectionForm';
 
 function GetUsers() {
   const { error, loading, data } = useQuery(LOAD_COLLECTIONS);
@@ -14,7 +15,6 @@ function GetUsers() {
       console.log(data.bookCollections);
     }
   }, [data]);
-  // let a = games.map((val, key) => console.log(val.reviews[0]));
   return (
     <div className="content">
       <div className="book_block">
@@ -26,10 +26,11 @@ function GetUsers() {
                   textDecoration: 'none',
                   color: 'black',
                   textTransform: 'uppercase',
-                }}>{`${val.id}) ${val.collection}`}</Link>
+                }}>{`${val.id}) ${val.collection}, Number of books: ${val.bookQuantity}`}</Link>
             </li>
           ))}
         </ul>
+        <CollectionForm />
       </div>
     </div>
   );
