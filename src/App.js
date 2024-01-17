@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from '@ap
 import { onError } from '@apollo/client/link/error';
 import HomePage from './pages/HomePage';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import CollectionPage from './pages/CollectionPage';
+import CollectionInnerPage from './pages/CollectionInnerPage';
 import Header from './components/Header';
 
 const errorLink = onError(({ graphqlErrors, networkError }) => {
@@ -32,7 +32,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/collection/:id" element={<CollectionPage />} />
+          <Route path="/collection/:id" element={<CollectionInnerPage />} />
         </Routes>
       </Router>
     </ApolloProvider>

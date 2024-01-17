@@ -5,35 +5,41 @@ import '../index.css';
 import { Link, useNavigate } from 'react-router-dom';
 import CollectionForm from './CollectionForm';
 
-function GetUsers() {
-  const { error, loading, data } = useQuery(LOAD_COLLECTIONS);
-  const [collection, setCollections] = useState([]);
+function AllCollectionsPage() {
+  const { error, loading, data, refetch } = useQuery(LOAD_COLLECTIONS);
   const navigate = useNavigate();
-  useEffect(() => {
-    if (data && data.bookCollections) {
-      setCollections(data.bookCollections);
-      console.log(data.bookCollections);
-    }
-  }, [data]);
+
+  if (loading) {
+    return <>Loading</>;
+  }
+
+  if (error) {
+    return <>Error: {JSON.stringify(error)}</>;
+  }
+
+  if (!data) {
+    return <>No data</>;
+  }
+
   return (
     <div className="content">
       <div className="book_block">
         <ul className="books">
-          {collection.map((val, key) => (
+          {data.getCollections.map((val, key) => (
             <li className="book_item" key={key} onClick={() => navigate(`/collection/${val.id}`)}>
               <Link
                 style={{
                   textDecoration: 'none',
                   color: 'black',
                   textTransform: 'uppercase',
-                }}>{`${val.id}) ${val.collection}, Number of books: ${val.bookQuantity}`}</Link>
+                }}>{`${val.id}) ${val.title}, Number of books: ${val.bookQuantity}`}</Link>
             </li>
           ))}
         </ul>
-        <CollectionForm />
+        <CollectionForm onCreate={() => refetch()} />
       </div>
     </div>
   );
 }
 
-export default GetUsers;
+export default AllCollectionsPage;

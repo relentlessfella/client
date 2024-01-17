@@ -1,29 +1,21 @@
 import React, { useState } from 'react';
 import '../index.css';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { ADD_COLLECTION } from '../GraphQL/Queries';
 
-function CollectionForm() {
-  const ADD_COLLECTION = gql`
-    mutation AddCollection($collection: AddCollectionInput!) {
-      addCollection(collection: $collection) {
-        id
-        collection
-      }
-    }
-  `;
+function CollectionForm({ onCreate }) {
   const [title, setTitle] = useState('');
   const [addCollection] = useMutation(ADD_COLLECTION);
   const handleAddCollection = async () => {
-    console.log(typeof title, title);
     try {
       const result = await addCollection({
         variables: {
           collection: {
-            collection: title,
+            title: title,
           },
         },
       });
-      console.log('dsad' + result);
+      onCreate();
       console.log('Collection added:', result.data.addCollection);
       setTitle('');
     } catch (error) {

@@ -1,34 +1,25 @@
 import React, { useState } from 'react';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import '../index.css';
+import { ADD_BOOK } from '../GraphQL/Queries';
 
-const ADD_BOOK = gql`
-  mutation AddBookToCollection($collectionId: ID!, $book: AddBookInput!) {
-    addBookToCollection(collectionId: $collectionId, book: $book) {
-      id
-      title
-      description
-      collection_id
-    }
-  }
-`;
-
-function Form({ collection_id }) {
+function BookForm({ collection_id, onCreate }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [AddBook] = useMutation(ADD_BOOK);
-
   const handleAddBook = async () => {
     try {
+      console.log(title);
       const result = await AddBook({
         variables: {
-          collectionId: collection_id,
+          collection_id: collection_id,
           book: {
-            title,
-            description,
+            title: title,
+            description: description,
           },
         },
       });
+      onCreate();
       console.log('book added:', result.data.AddBook);
       setTitle('');
       setDescription('');
@@ -65,4 +56,4 @@ function Form({ collection_id }) {
   );
 }
 
-export default Form;
+export default BookForm;

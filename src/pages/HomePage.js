@@ -1,10 +1,10 @@
 import React from 'react';
-import GetUsers from '../components/GetUsers';
+import AllCollectionsPage from '../components/AllCollectionsPage';
 
 const HomePage = () => {
   return (
     <div>
-      <GetUsers />
+      <AllCollectionsPage />
     </div>
   );
 };
