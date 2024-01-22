@@ -49,11 +49,12 @@ function CollectionForm({ onCreate }) {
       </button> */}
       <Form.Item
         label="Set Collection Title"
+        style={{ margin: '15px 0 15px 0 ' }}
         onChange={(e) => {
           setTitle(e.target.value);
         }}>
         <div style={{ display: 'flex' }}>
-          <Input />
+          <Input value={title} />
           <Button onClick={handleAddCollection}>Send</Button>
         </div>
       </Form.Item>

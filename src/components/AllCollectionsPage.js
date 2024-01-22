@@ -2,19 +2,48 @@ import React, { useEffect, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { LOAD_COLLECTIONS } from '../GraphQL/Queries';
 import '../index.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CollectionForm from './CollectionForm';
+import { Button, List, Result } from 'antd';
+import { CollectionSkeleton } from '../skeleton/Skeleton';
 
 function AllCollectionsPage() {
   const { error, loading, data, refetch } = useQuery(LOAD_COLLECTIONS);
   const navigate = useNavigate();
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      width: 300,
+    },
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      width: 300,
+    },
+  ];
 
   if (loading) {
-    return <>Loading</>;
+    return (
+      <div style={{ marginTop: '4px' }} className="collections_content">
+        <CollectionSkeleton />
+      </div>
+    );
   }
 
   if (error) {
-    return <>Error: {JSON.stringify(error)}</>;
+    return (
+      <Result
+        status="404"
+        title="404"
+        subTitle="Sorry, the page you visited does not exist."
+        extra={
+          <Button onClick={() => navigate('/')} type="primary">
+            Back Home
+          </Button>
+        }
+      />
+    );
   }
 
   if (!data) {
@@ -22,20 +51,26 @@ function AllCollectionsPage() {
   }
 
   return (
-    <div className="content">
-      <div className="book_block">
-        <ul className="books">
-          {data.getCollections.map((val, key) => (
-            <li className="book_item" key={key} onClick={() => navigate(`/collection/${val.id}`)}>
-              <Link
-                style={{
-                  textDecoration: 'none',
-                  color: 'black',
-                  textTransform: 'uppercase',
-                }}>{`${val.id}) ${val.title}, Number of books: ${val.bookQuantity}`}</Link>
-            </li>
-          ))}
-        </ul>
+    <div className="collections_content">
+      <div>
+        <List
+          pagination={{
+            position: 'bottom',
+            align: 'end',
+          }}
+          columns={columns}
+          dataSource={data.getCollections}
+          style={{ width: '1000px' }}
+          renderItem={(item, index) => (
+            <List.Item>
+              <List.Item.Meta
+                title={<a>{item.title}</a>}
+                onClick={() => navigate(`/collection/${item.id}`)}
+                description=""
+              />
+            </List.Item>
+          )}
+        />
         <CollectionForm onCreate={() => refetch()} />
       </div>
     </div>

@@ -4,6 +4,8 @@ import { useQuery } from '@apollo/client';
 import '../index.css';
 import { LOAD_BOOKS } from '../GraphQL/Queries';
 import BookForm from '../components/BookForm';
+import { Button, Table } from 'antd';
+import { BookSkeleton } from '../skeleton/Skeleton';
 
 function CollectionInnerPage() {
   const id = useParams().id;
@@ -14,6 +16,24 @@ function CollectionInnerPage() {
   const [books, setBooks] = useState([]);
   const [collection, setCollections] = useState([]);
 
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      width: 300,
+    },
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      width: 300,
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      width: 300,
+    },
+  ];
+
   useEffect(() => {
     if (data && data.bookCollection && data.books) {
       setCollections(data.bookCollection);
@@ -21,29 +41,22 @@ function CollectionInnerPage() {
       console.log('Data:', data.books);
     }
   }, [data]);
-  if (loading) return <p style={{ textAlign: 'center' }}>Loading...</p>;
+  if (loading)
+    return (
+      <div className="content" style={{ marginTop: '50px' }}>
+        <BookSkeleton />
+      </div>
+    );
   if (error) return <p style={{ textAlign: 'center' }}>Error: {error.message}</p>;
   return (
     <div className="content">
-      <div className="book_block">
-        <h3 style={{ textAlign: 'center' }}>{collection.title}</h3>
-        <div className="parent_button">
-          <p>Number of books: {collection.bookQuantity}</p>
-          <button className="collection_button_back" onClick={() => navigate('/')}>
-            BACK
-          </button>
-        </div>
-        <ul style={{ padding: '0' }}>
-          {books &&
-            books.map((book, key) => {
-              return (
-                <li className="book_item" style={{ listStyleType: 'none' }} key={book.id}>
-                  {`Book ID: ${book.id} `}
-                  {`Title: ${book.title} Description: ${book.description}`}
-                </li>
-              );
-            })}
-        </ul>
+      <div>
+        <Button
+          style={{ float: 'right', margin: '10px', marginRight: '0px' }}
+          onClick={() => navigate('/')}>
+          Back
+        </Button>
+        <Table style={{ borderRadius: '15px' }} columns={columns} dataSource={data.books} />
         <BookForm collection_id={id} onCreate={() => refetch()} />
       </div>
     </div>
